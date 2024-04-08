@@ -15,6 +15,13 @@
       "when": 1712594910315,
       "tag": "0001_outgoing_black_cat",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1712595958763,
+      "tag": "0002_orange_storm",
+      "breakpoints": true
     }
   ]
 }
