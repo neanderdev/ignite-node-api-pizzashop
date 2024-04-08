@@ -1,5 +1,5 @@
 {
-  "name": "@bun-examples/elysia",
+  "name": "pizza-shop-api",
   "version": "1.0.50",
   "scripts": {
     "dev": "bun --watch src/http/server.ts",
@@ -13,7 +13,7 @@
   "devDependencies": {
     "bun-types": "latest"
   },
-  "module": "src/index.js",
+  "module": "src/http/server.ts",
   "bun-create": {
     "start": "bun run src/http/server.ts"
   }
