@@ -1,2 +1,15 @@
-# ignite-node-api-pizzashop
-Este aplicativo fornece uma API REST para o front-end do pizza.shop.
+# pizza-shop-api
+
+To install dependencies:
+
+```bash
+bun install
+```
+
+To run:
+
+```bash
+bun run index.ts
+```
+
+This project was created using `bun init` in bun v1.0.23. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.

@@ -1,0 +1,20 @@
+{
+  "name": "@bun-examples/elysia",
+  "version": "1.0.50",
+  "scripts": {
+    "dev": "bun --watch src/http/server.ts",
+    "build": "bun build src/http/server.ts",
+    "start": "NODE_ENV=production bun src/http/server.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "elysia": "latest"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "module": "src/index.js",
+  "bun-create": {
+    "start": "bun run src/http/server.ts"
+  }
+}
