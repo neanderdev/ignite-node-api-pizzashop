@@ -17,6 +17,7 @@
     "@elysiajs/jwt": "^1.0.2",
     "@paralleldrive/cuid2": "^2.2.2",
     "chalk": "^5.3.0",
+    "dayjs": "^1.11.10",
     "drizzle-orm": "^0.30.7",
     "elysia": "latest",
     "postgres": "^3.4.4",
