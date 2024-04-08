@@ -7,13 +7,16 @@
     "start": "NODE_ENV=production bun src/http/server.ts",
     "test": "bun test",
     "generate": "drizzle-kit generate:pg",
+    "studio": "drizzle-kit studio",
     "migrate": "bun ./src/db/migrate.ts"
   },
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.2",
+    "chalk": "^5.3.0",
     "drizzle-orm": "^0.30.7",
     "elysia": "latest",
-    "postgres": "^3.4.4"
+    "postgres": "^3.4.4",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "bun-types": "latest",
