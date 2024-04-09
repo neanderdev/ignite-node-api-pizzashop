@@ -1,6 +1,8 @@
 import { faker } from '@faker-js/faker'
 import chalk from 'chalk'
+
 import { db } from './connection'
+
 import { restaurants, users } from './schema'
 
 /**
