@@ -4,6 +4,7 @@ import { approveOrder } from './routes/approve-order'
 import { authenticateFromLink } from './routes/authenticate-from-link'
 import { cancelOrder } from './routes/cancel-order'
 import { createEvaluation } from './routes/create-evaluation'
+import { createOrder } from './routes/create-order'
 import { deliverOrder } from './routes/deliver-order'
 import { dispatchOrder } from './routes/dispatch-order'
 import { getDailyReceiptInPeriod } from './routes/get-daily-receipt-in-period'
@@ -30,6 +31,7 @@ const app = new Elysia()
   .use(getProfile)
   .use(updateRestaurant)
   .use(getManagedRestaurante)
+  .use(createOrder)
   .use(getOrderDetails)
   .use(approveOrder)
   .use(cancelOrder)
