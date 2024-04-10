@@ -21,6 +21,7 @@ import { getProfile } from './routes/get-profile'
 import { registerRestaurante } from './routes/register-restaurante'
 import { sendAuthLink } from './routes/send-auth-link'
 import { signOut } from './routes/sign-out'
+import { updateMenu } from './routes/update-menu'
 import { updateRestaurant } from './routes/update-restaurant'
 
 const app = new Elysia()
@@ -38,6 +39,7 @@ const app = new Elysia()
   .use(deliverOrder)
   .use(dispatchOrder)
   .use(getOrders)
+  .use(updateMenu)
   .use(getMonthReceipt)
   .use(getDayOrdersAmount)
   .use(getMonthOrdersAmount)
