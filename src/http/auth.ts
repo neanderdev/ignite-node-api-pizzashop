@@ -28,6 +28,7 @@ export const auth = new Elysia()
   })
   .use(
     jwt({
+      name: 'jwt',
       secret: env.JWT_SECRET_KEY,
       schema: jwtPayload,
     }),

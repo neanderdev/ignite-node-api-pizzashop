@@ -2,8 +2,8 @@ import dayjs from 'dayjs'
 import { eq } from 'drizzle-orm'
 import Elysia, { t } from 'elysia'
 
-import { db } from '../../db/connection'
-import { authLinks } from '../../db/schema'
+import { db } from '@/db/connection'
+import { authLinks } from '@/db/schema'
 
 import { auth } from '../auth'
 

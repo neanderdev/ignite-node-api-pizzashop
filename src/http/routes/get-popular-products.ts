@@ -3,8 +3,8 @@ import Elysia from 'elysia'
 
 import { UnauthorizedError } from '../errors/unauthorized-error'
 
-import { db } from '../../db/connection'
-import { orderItems, orders, products } from '../../db/schema'
+import { db } from '@/db/connection'
+import { orderItems, orders, products } from '@/db/schema'
 
 import { auth } from '../auth'
 

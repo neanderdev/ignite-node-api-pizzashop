@@ -2,7 +2,7 @@ import Elysia from 'elysia'
 
 import { UnauthorizedError } from '../errors/unauthorized-error'
 
-import { db } from '../../db/connection'
+import { db } from '@/db/connection'
 
 import { auth } from '../auth'
 

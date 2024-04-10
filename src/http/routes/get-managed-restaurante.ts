@@ -1,6 +1,6 @@
 import Elysia from 'elysia'
 
-import { db } from '../../db/connection'
+import { db } from '@/db/connection'
 
 import { auth } from '../auth'
 

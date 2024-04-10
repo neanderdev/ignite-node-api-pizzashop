@@ -4,8 +4,8 @@ import Elysia, { t } from 'elysia'
 
 import { UnauthorizedError } from '../errors/unauthorized-error'
 
-import { db } from '../../db/connection'
-import { orders, users } from '../../db/schema'
+import { db } from '@/db/connection'
+import { orders, users } from '@/db/schema'
 
 import { auth } from '../auth'
 
@@ -75,7 +75,7 @@ export const getOrders = new Elysia().use(auth).get(
       customerName: t.Optional(t.String()),
       orderId: t.Optional(t.String()),
       status: t.Optional(createSelectSchema(orders).properties.status),
-      pageIndex: t.Numeric({ minimum: 0 }),
+      pageIndex: t.Numeric({ minimum: 0, default: 0 }),
     }),
   },
 )

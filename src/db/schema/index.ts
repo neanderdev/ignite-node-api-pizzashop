@@ -1,4 +1,5 @@
 export * from './auth-links'
+export * from './evaluations'
 export * from './order-items'
 export * from './orders'
 export * from './products'
