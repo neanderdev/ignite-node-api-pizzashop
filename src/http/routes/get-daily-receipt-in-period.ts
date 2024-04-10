@@ -54,6 +54,8 @@ export const getDailyReceiptInPeriod = new Elysia().use(auth).get(
         ),
       )
       .groupBy(sql`TO_CHAR(${orders.createdAt}, 'DD/MM')`)
+      .orderBy(sql`TO_CHAR(${orders.createdAt}, 'DD/MM')`)
+      .having(({ receipt }) => gte(receipt, 1))
 
     const orderedReceiptPerDay = receiptPerDay.sort((a, b) => {
       const [dayA, monthA] = a.date.split('/').map(Number)
