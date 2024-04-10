@@ -36,6 +36,7 @@ export const getMonthCanceledOrdersAmount = new Elysia()
         ),
       )
       .groupBy(sql`TO_CHAR(${orders.createdAt}, 'YYYY-MM')`)
+      .having(({ amount }) => gte(amount, 1))
 
     const currentMonthWithYear = today.format('YYYY-MM') // 2024-02
     const lastMonthWithYear = lastMonth.format('YYYY-MM') // 2024-01

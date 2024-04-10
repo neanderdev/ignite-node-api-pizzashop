@@ -35,6 +35,7 @@ export const getMonthReceipt = new Elysia()
         ),
       )
       .groupBy(sql`TO_CHAR(${orders.createdAt}, 'YYYY-MM')`)
+      .having(({ receipt }) => gte(receipt, 1))
 
     const currentMonthWithYear = today.format('YYYY-MM') // 2024-02
     const lastMonthWithYear = lastMonth.format('YYYY-MM') // 2024-01

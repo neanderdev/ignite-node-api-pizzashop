@@ -35,6 +35,7 @@ export const getDayOrdersAmount = new Elysia()
         ),
       )
       .groupBy(sql`TO_CHAR(${orders.createdAt}, 'YYYY-MM-DD')`)
+      .having(({ amount }) => gte(amount, 1))
 
     const todayWithMonthAndYear = today.format('YYYY-MM-DD')
     const yesterdayWithMonthAndYear = yesterday.format('YYYY-MM-DD')
