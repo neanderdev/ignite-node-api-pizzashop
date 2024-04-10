@@ -3,6 +3,7 @@ import { Elysia } from 'elysia'
 import { approveOrder } from './routes/approve-order'
 import { authenticateFromLink } from './routes/authenticate-from-link'
 import { cancelOrder } from './routes/cancel-order'
+import { createEvaluation } from './routes/create-evaluation'
 import { deliverOrder } from './routes/deliver-order'
 import { dispatchOrder } from './routes/dispatch-order'
 import { getDailyReceiptInPeriod } from './routes/get-daily-receipt-in-period'
@@ -40,6 +41,7 @@ const app = new Elysia()
   .use(getPopularProducts)
   .use(getDailyReceiptInPeriod)
   .use(getEvaluations)
+  .use(createEvaluation)
   .onError(({ code, error, set }) => {
     switch (code) {
       case 'VALIDATION': {

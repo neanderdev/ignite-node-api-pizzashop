@@ -9,8 +9,14 @@ export const evaluations = pgTable('evaluations', {
   id: text('id')
     .$defaultFn(() => createId())
     .primaryKey(),
-  customerId: text('customer_id').references(() => users.id),
-  restaurantId: text('restaurant_id').references(() => users.id),
+  customerId: text('customer_id').references(() => users.id, {
+    onDelete: 'set null',
+  }),
+  restaurantId: text('restaurant_id')
+    .notNull()
+    .references(() => restaurants.id, {
+      onDelete: 'cascade',
+    }),
   rate: integer('rate').notNull(),
   comment: text('comment'),
   createdAt: timestamp('created_at').defaultNow(),
