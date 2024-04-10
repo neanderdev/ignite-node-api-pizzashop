@@ -49,7 +49,7 @@ export const getDailyReceiptInPeriod = new Elysia().use(auth).get(
           ),
           lte(
             orders.createdAt,
-            endDate.endOf('day').add(startDate.utcOffset(), 'minutes').toDate(),
+            endDate.endOf('day').add(endDate.utcOffset(), 'minutes').toDate(),
           ),
         ),
       )
