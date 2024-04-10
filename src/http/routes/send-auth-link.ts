@@ -8,8 +8,8 @@ import { db } from '@/db/connection'
 import { authLinks } from '@/db/schema'
 import { env } from '@/env'
 // import { mail } from '@/lib/mail'
-import { resend } from '@/mail/client'
-import { AuthenticationMagicLinkTemplate } from '@/mail/templates/authentication-magic-link'
+// import { resend } from '@/mail/client'
+// import { AuthenticationMagicLinkTemplate } from '@/mail/templates/authentication-magic-link'
 
 export const sendAuthLink = new Elysia().post(
   '/authenticate',
@@ -38,15 +38,17 @@ export const sendAuthLink = new Elysia().post(
     authLink.searchParams.set('code', authLinkCode)
     authLink.searchParams.set('redirect', env.AUTH_REDIRECT_URL)
 
-    await resend.emails.send({
-      from: 'Pizza Shop <naoresponda@fala.dev>',
-      to: email,
-      subject: '[Pizza Shop] Link para login',
-      react: AuthenticationMagicLinkTemplate({
-        userEmail: email,
-        authLink: authLink.toString(),
-      }),
-    })
+    console.log(authLink.toString())
+
+    // await resend.emails.send({
+    //   from: 'Pizza Shop <naoresponda@fala.dev>',
+    //   to: email,
+    //   subject: '[Pizza Shop] Link para login',
+    //   react: AuthenticationMagicLinkTemplate({
+    //     userEmail: email,
+    //     authLink: authLink.toString(),
+    //   }),
+    // })
 
     // const info = await mail.sendMail({
     //   from: {
