@@ -2,10 +2,19 @@ import Elysia, { t } from 'elysia'
 
 import { db } from '@/db/connection'
 
-export const getEvaluations = new Elysia().get(
+import { auth } from '../auth'
+
+export const getEvaluations = new Elysia().use(auth).get(
   '/evaluations',
-  async ({ query }) => {
+  async ({ query, set, getCurrentUser }) => {
     const { pageIndex } = query
+    const { restauranteId } = await getCurrentUser()
+
+    if (!restauranteId) {
+      set.status = 401
+
+      throw new Error('User is not a restaurant manager.')
+    }
 
     const evaluations = await db.query.evaluations.findMany({
       offset: pageIndex * 10,

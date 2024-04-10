@@ -19,7 +19,9 @@ export const authenticateFromLink = new Elysia().use(auth).get(
     })
 
     if (!authLinkFromCode) {
-      throw new Error('Auth link not found.')
+      set.status = 401
+
+      throw new Error('Invalid authentication code.')
     }
 
     const daysSinceAuthLinkWasCreated = dayjs().diff(
@@ -28,7 +30,9 @@ export const authenticateFromLink = new Elysia().use(auth).get(
     )
 
     if (daysSinceAuthLinkWasCreated > 7) {
-      throw new Error('Auth link expired, please generate a new one.')
+      set.status = 401
+
+      throw new Error('This link is expired, generate a new one.')
     }
 
     const managedRestaurante = await db.query.restaurants.findFirst({
