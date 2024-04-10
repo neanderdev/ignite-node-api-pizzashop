@@ -5,6 +5,8 @@ import Elysia, { t } from 'elysia'
 import { db } from '@/db/connection'
 import { authLinks } from '@/db/schema'
 
+import { UnauthorizedError } from '../errors/unauthorized-error'
+
 import { auth } from '../auth'
 
 export const authenticateFromLink = new Elysia().use(auth).get(
@@ -19,9 +21,7 @@ export const authenticateFromLink = new Elysia().use(auth).get(
     })
 
     if (!authLinkFromCode) {
-      set.status = 401
-
-      throw new Error('Invalid authentication code.')
+      throw new UnauthorizedError()
     }
 
     const daysSinceAuthLinkWasCreated = dayjs().diff(
@@ -30,9 +30,7 @@ export const authenticateFromLink = new Elysia().use(auth).get(
     )
 
     if (daysSinceAuthLinkWasCreated > 7) {
-      set.status = 401
-
-      throw new Error('This link is expired, generate a new one.')
+      throw new UnauthorizedError()
     }
 
     const managedRestaurante = await db.query.restaurants.findFirst({

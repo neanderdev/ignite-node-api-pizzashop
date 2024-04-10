@@ -1,3 +1,4 @@
+import { cors } from '@elysiajs/cors'
 import { Elysia } from 'elysia'
 
 import { approveOrder } from './routes/approve-order'
@@ -25,6 +26,21 @@ import { updateMenu } from './routes/update-menu'
 import { updateRestaurant } from './routes/update-restaurant'
 
 const app = new Elysia()
+  .use(
+    cors({
+      credentials: true,
+      allowedHeaders: ['content-type'],
+      origin: (request): boolean => {
+        const origin = request.headers.get('origin')
+
+        if (!origin) {
+          return false
+        }
+
+        return true
+      },
+    }),
+  )
   .use(registerRestaurante)
   .use(sendAuthLink)
   .use(authenticateFromLink)

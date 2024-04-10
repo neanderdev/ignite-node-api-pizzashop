@@ -19,6 +19,7 @@ export const auth = new Elysia()
     switch (code) {
       case 'UNAUTHORIZED': {
         set.status = 401
+
         return {
           code,
           message: error.message,
