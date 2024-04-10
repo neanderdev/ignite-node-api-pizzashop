@@ -2,9 +2,9 @@ import cookie from '@elysiajs/cookie'
 import jwt from '@elysiajs/jwt'
 import { Elysia, t, type Static } from 'elysia'
 
-import { UnauthorizedError } from './errors/unauthorized-error'
+import { env } from '@/env'
 
-import { env } from '../env'
+import { UnauthorizedError } from './errors/unauthorized-error'
 
 const jwtPayload = t.Object({
   sub: t.String(),
