@@ -28,15 +28,13 @@ export const approveOrder = new Elysia().use(auth).patch(
     })
 
     if (!order) {
-      set.status = 400
-
-      return { message: 'Order not found.' }
+      throw new UnauthorizedError()
     }
 
     if (order.status !== 'pending') {
       set.status = 400
 
-      return { message: 'You can only approve pending orders.' }
+      return { message: 'Order was already approved before.' }
     }
 
     await db
