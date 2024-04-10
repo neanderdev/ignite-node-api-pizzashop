@@ -1,13 +1,13 @@
 import { createId } from '@paralleldrive/cuid2'
 import Elysia, { t } from 'elysia'
-// import nodemailer from 'nodemailer'
+import nodemailer from 'nodemailer'
 
 import { UnauthorizedError } from '../errors/unauthorized-error'
 
 import { db } from '@/db/connection'
 import { authLinks } from '@/db/schema'
 import { env } from '@/env'
-// import { mail } from '@/lib/mail'
+import { mail } from '@/lib/mail'
 // import { resend } from '@/mail/client'
 // import { AuthenticationMagicLinkTemplate } from '@/mail/templates/authentication-magic-link'
 
@@ -50,17 +50,17 @@ export const sendAuthLink = new Elysia().post(
     //   }),
     // })
 
-    // const info = await mail.sendMail({
-    //   from: {
-    //     name: 'Pizza Shop',
-    //     address: 'hi@pizzashop.com',
-    //   },
-    //   to: email,
-    //   subject: 'Authenticate to Pizza Shop',
-    //   text: `Use the following link to authenticate on Pizza Shop: ${authLink.toString()}`,
-    // })
+    const info = await mail.sendMail({
+      from: {
+        name: 'Pizza Shop',
+        address: 'hi@pizzashop.com',
+      },
+      to: email,
+      subject: 'Authenticate to Pizza Shop',
+      text: `Use the following link to authenticate on Pizza Shop: ${authLink.toString()}`,
+    })
 
-    // console.log(nodemailer.getTestMessageUrl(info))
+    console.log(nodemailer.getTestMessageUrl(info))
   },
   {
     body: t.Object({
