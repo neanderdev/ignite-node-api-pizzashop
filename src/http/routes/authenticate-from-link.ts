@@ -5,7 +5,7 @@ import Elysia, { t } from 'elysia'
 import { db } from '@/db/connection'
 import { authLinks } from '@/db/schema'
 
-import { UnauthorizedError } from '../errors/unauthorized-error'
+import { UnauthorizedError } from './errors/unauthorized-error'
 
 import { auth } from '../auth'
 
@@ -33,7 +33,7 @@ export const authenticateFromLink = new Elysia().use(auth).get(
       throw new UnauthorizedError()
     }
 
-    const managedRestaurante = await db.query.restaurants.findFirst({
+    const managedRestaurant = await db.query.restaurants.findFirst({
       where(fields, { eq }) {
         return eq(fields.managerId, authLinkFromCode.userId)
       },
@@ -41,7 +41,7 @@ export const authenticateFromLink = new Elysia().use(auth).get(
 
     await signUser({
       sub: authLinkFromCode.userId,
-      restauranteId: managedRestaurante?.id,
+      restaurantId: managedRestaurant?.id,
     })
 
     await db.delete(authLinks).where(eq(authLinks.code, code))

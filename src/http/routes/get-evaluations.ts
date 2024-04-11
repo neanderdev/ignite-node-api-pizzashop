@@ -2,18 +2,18 @@ import Elysia, { t } from 'elysia'
 
 import { db } from '@/db/connection'
 
+import { NotAManagerError } from './errors/not-a-manager-error'
+
 import { auth } from '../auth'
 
 export const getEvaluations = new Elysia().use(auth).get(
   '/evaluations',
-  async ({ query, set, getCurrentUser }) => {
+  async ({ query, getCurrentUser }) => {
     const { pageIndex } = query
-    const { restauranteId } = await getCurrentUser()
+    const { restaurantId } = await getCurrentUser()
 
-    if (!restauranteId) {
-      set.status = 401
-
-      throw new Error('User is not a restaurant manager.')
+    if (!restaurantId) {
+      throw new NotAManagerError()
     }
 
     const evaluations = await db.query.evaluations.findMany({

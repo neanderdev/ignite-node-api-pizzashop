@@ -9,7 +9,7 @@ import { auth } from '../auth'
 export const createOrder = new Elysia().use(auth).post(
   '/restaurants/:restaurantId/orders',
   async ({ params, body, getCurrentUser, set }) => {
-    const { userId } = await getCurrentUser()
+    const { customerId } = await getCurrentUser()
     const { restaurantId } = params
     const { items } = body
 
@@ -48,7 +48,7 @@ export const createOrder = new Elysia().use(auth).post(
         .insert(orders)
         .values({
           totalInCents,
-          customerId: userId,
+          customerId,
           restaurantId,
         })
         .returning({

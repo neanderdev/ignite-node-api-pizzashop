@@ -4,8 +4,6 @@ import Elysia, { Static, t } from 'elysia'
 import { db } from '@/db/connection'
 import { products } from '@/db/schema'
 
-import { UnauthorizedError } from '../errors/unauthorized-error'
-
 import { auth } from '../auth'
 
 const productSchema = t.Object({
@@ -17,12 +15,8 @@ const productSchema = t.Object({
 
 export const updateMenu = new Elysia().use(auth).put(
   '/menu',
-  async ({ getCurrentUser, set, body }) => {
-    const { restauranteId } = await getCurrentUser()
-
-    if (!restauranteId) {
-      throw new UnauthorizedError()
-    }
+  async ({ getManagedRestaurantId, set, body }) => {
+    const restaurantId = await getManagedRestaurantId()
 
     const {
       products: { deletedProductIds, newOrUpdatedProducts },
@@ -34,7 +28,7 @@ export const updateMenu = new Elysia().use(auth).put(
         .where(
           and(
             inArray(products.id, deletedProductIds),
-            eq(products.restaurantId, restauranteId),
+            eq(products.restaurantId, restaurantId),
           ),
         )
     }
@@ -62,7 +56,7 @@ export const updateMenu = new Elysia().use(auth).put(
             .where(
               and(
                 eq(products.id, product.id),
-                eq(products.restaurantId, restauranteId),
+                eq(products.restaurantId, restaurantId),
               ),
             )
         }),
@@ -82,7 +76,7 @@ export const updateMenu = new Elysia().use(auth).put(
             name: product.name,
             description: product.description,
             priceInCents: product.price * 100,
-            restaurantId: restauranteId,
+            restaurantId,
           }
         }),
       )

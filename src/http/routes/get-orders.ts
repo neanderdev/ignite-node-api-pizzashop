@@ -2,7 +2,7 @@ import { and, count, desc, eq, ilike, sql } from 'drizzle-orm'
 import { createSelectSchema } from 'drizzle-typebox'
 import Elysia, { t } from 'elysia'
 
-import { UnauthorizedError } from '../errors/unauthorized-error'
+import { NotAManagerError } from './errors/not-a-manager-error'
 
 import { db } from '@/db/connection'
 import { orders, users } from '@/db/schema'
@@ -12,11 +12,11 @@ import { auth } from '../auth'
 export const getOrders = new Elysia().use(auth).get(
   '/orders',
   async ({ getCurrentUser, query }) => {
-    const { restauranteId } = await getCurrentUser()
     const { customerName, orderId, status, pageIndex } = query
+    const { restaurantId } = await getCurrentUser()
 
-    if (!restauranteId) {
-      throw new UnauthorizedError()
+    if (!restaurantId) {
+      throw new NotAManagerError()
     }
 
     const baseQuery = db
@@ -31,7 +31,7 @@ export const getOrders = new Elysia().use(auth).get(
       .innerJoin(users, eq(users.id, orders.customerId))
       .where(
         and(
-          eq(orders.restaurantId, restauranteId),
+          eq(orders.restaurantId, restaurantId),
           orderId ? ilike(orders.id, `%${orderId}%`) : undefined,
           status ? eq(orders.status, status) : undefined,
           customerName ? ilike(users.name, `%${customerName}%`) : undefined,

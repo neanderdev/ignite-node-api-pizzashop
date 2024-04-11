@@ -2,8 +2,6 @@ import dayjs from 'dayjs'
 import { and, count, eq, gte, sql } from 'drizzle-orm'
 import Elysia from 'elysia'
 
-import { UnauthorizedError } from '../errors/unauthorized-error'
-
 import { db } from '@/db/connection'
 import { orders } from '@/db/schema'
 
@@ -11,53 +9,53 @@ import { auth } from '../auth'
 
 export const getMonthCanceledOrdersAmount = new Elysia()
   .use(auth)
-  .get('/metrics/month-canceled-orders-amount', async ({ getCurrentUser }) => {
-    const { restauranteId } = await getCurrentUser()
+  .get(
+    '/metrics/month-canceled-orders-amount',
+    async ({ getManagedRestaurantId }) => {
+      const restaurantId = await getManagedRestaurantId()
 
-    if (!restauranteId) {
-      throw new UnauthorizedError()
-    }
+      const today = dayjs()
+      const lastMonth = today.subtract(1, 'month')
+      const startOfLastMonth = lastMonth.startOf('month')
 
-    const today = dayjs()
-    const lastMonth = today.subtract(1, 'month')
-    const startOfLastMonth = lastMonth.startOf('month')
+      const ordersPerMonth = await db
+        .select({
+          monthWithYear: sql<string>`TO_CHAR(${orders.createdAt}, 'YYYY-MM')`,
+          amount: count(),
+        })
+        .from(orders)
+        .where(
+          and(
+            eq(orders.restaurantId, restaurantId),
+            eq(orders.status, 'canceled'),
+            gte(orders.createdAt, startOfLastMonth.toDate()),
+          ),
+        )
+        .groupBy(sql`TO_CHAR(${orders.createdAt}, 'YYYY-MM')`)
+        .having(({ amount }) => gte(amount, 1))
 
-    const ordersPerMonth = await db
-      .select({
-        monthWithYear: sql<string>`TO_CHAR(${orders.createdAt}, 'YYYY-MM')`,
-        amount: count(),
+      const currentMonthWithYear = today.format('YYYY-MM') // 2024-02
+      const lastMonthWithYear = lastMonth.format('YYYY-MM') // 2024-01
+
+      const currentMonthOrdersAmount = ordersPerMonth.find((orderPerMonth) => {
+        return orderPerMonth.monthWithYear === currentMonthWithYear
       })
-      .from(orders)
-      .where(
-        and(
-          eq(orders.restaurantId, restauranteId),
-          eq(orders.status, 'canceled'),
-          gte(orders.createdAt, startOfLastMonth.toDate()),
-        ),
-      )
-      .groupBy(sql`TO_CHAR(${orders.createdAt}, 'YYYY-MM')`)
-      .having(({ amount }) => gte(amount, 1))
 
-    const currentMonthWithYear = today.format('YYYY-MM') // 2024-02
-    const lastMonthWithYear = lastMonth.format('YYYY-MM') // 2024-01
+      const lastMonthOrdersAmount = ordersPerMonth.find((orderPerMonth) => {
+        return orderPerMonth.monthWithYear === lastMonthWithYear
+      })
 
-    const currentMonthOrdersAmount = ordersPerMonth.find((orderPerMonth) => {
-      return orderPerMonth.monthWithYear === currentMonthWithYear
-    })
+      const diffFromLastMonth =
+        currentMonthOrdersAmount && lastMonthOrdersAmount
+          ? (currentMonthOrdersAmount.amount * 100) /
+            lastMonthOrdersAmount.amount
+          : null
 
-    const lastMonthOrdersAmount = ordersPerMonth.find((orderPerMonth) => {
-      return orderPerMonth.monthWithYear === lastMonthWithYear
-    })
-
-    const diffFromLastMonth =
-      currentMonthOrdersAmount && lastMonthOrdersAmount
-        ? (currentMonthOrdersAmount.amount * 100) / lastMonthOrdersAmount.amount
-        : null
-
-    return {
-      amount: currentMonthOrdersAmount?.amount || 0,
-      diffFromLastMonth: diffFromLastMonth
-        ? Number((diffFromLastMonth - 100).toFixed(2))
-        : 0,
-    }
-  })
+      return {
+        amount: currentMonthOrdersAmount?.amount || 0,
+        diffFromLastMonth: diffFromLastMonth
+          ? Number((diffFromLastMonth - 100).toFixed(2))
+          : 0,
+      }
+    },
+  )

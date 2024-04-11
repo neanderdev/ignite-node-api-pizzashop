@@ -11,7 +11,7 @@ import { dispatchOrder } from './routes/dispatch-order'
 import { getDailyReceiptInPeriod } from './routes/get-daily-receipt-in-period'
 import { getDayOrdersAmount } from './routes/get-day-orders-amount'
 import { getEvaluations } from './routes/get-evaluations'
-import { getManagedRestaurante } from './routes/get-managed-restaurante'
+import { getManagedRestaurant } from './routes/get-managed-restaurant'
 import { getMonthCanceledOrdersAmount } from './routes/get-month-canceled-orders-amount'
 import { getMonthOrdersAmount } from './routes/get-month-orders-amount'
 import { getMonthReceipt } from './routes/get-month-receipt'
@@ -19,7 +19,8 @@ import { getOrderDetails } from './routes/get-order-details'
 import { getOrders } from './routes/get-orders'
 import { getPopularProducts } from './routes/get-popular-products'
 import { getProfile } from './routes/get-profile'
-import { registerRestaurante } from './routes/register-restaurante'
+import { registerCustomer } from './routes/register-customer'
+import { registerRestaurant } from './routes/register-restaurant'
 import { sendAuthLink } from './routes/send-auth-link'
 import { signOut } from './routes/sign-out'
 import { updateMenu } from './routes/update-menu'
@@ -42,21 +43,22 @@ const app = new Elysia()
       },
     }),
   )
-  .use(registerRestaurante)
+  .use(registerRestaurant)
+  .use(registerCustomer)
   .use(sendAuthLink)
   .use(authenticateFromLink)
   .use(signOut)
   .use(getProfile)
+  .use(getManagedRestaurant)
   .use(updateRestaurant)
-  .use(getManagedRestaurante)
+  .use(updateMenu)
+  .use(getOrders)
   .use(createOrder)
   .use(getOrderDetails)
   .use(approveOrder)
   .use(cancelOrder)
   .use(deliverOrder)
   .use(dispatchOrder)
-  .use(getOrders)
-  .use(updateMenu)
   .use(getEvaluations)
   .use(createEvaluation)
   .use(getMonthReceipt)

@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm'
 import Elysia, { t } from 'elysia'
 
-import { UnauthorizedError } from '../errors/unauthorized-error'
+import { UnauthorizedError } from './errors/unauthorized-error'
 
 import { db } from '@/db/connection'
 import { orders } from '@/db/schema'
@@ -10,42 +10,35 @@ import { auth } from '../auth'
 
 export const deliverOrder = new Elysia().use(auth).patch(
   '/orders/:orderId/deliver',
-  async ({ getCurrentUser, set, params }) => {
+  async ({ getManagedRestaurantId, set, params }) => {
     const { orderId } = params
-    const { restauranteId } = await getCurrentUser()
-
-    if (!restauranteId) {
-      throw new UnauthorizedError()
-    }
+    const restaurantId = await getManagedRestaurantId()
 
     const order = await db.query.orders.findFirst({
       where(fields, { eq, and }) {
         return and(
           eq(fields.id, orderId),
-          eq(fields.restaurantId, restauranteId),
+          eq(fields.restaurantId, restaurantId),
         )
       },
     })
 
     if (!order) {
-      set.status = 400
-
-      return { message: 'Order not found.' }
+      throw new UnauthorizedError()
     }
 
     if (order.status !== 'delivering') {
       set.status = 400
 
-      return {
-        message:
-          'You cannot deliver orders that are not in "delivering" status.',
-      }
+      return { message: 'O pedido já foi entregue.' }
     }
 
     await db
       .update(orders)
       .set({ status: 'delivered' })
       .where(eq(orders.id, orderId))
+
+    set.status = 204
   },
   {
     params: t.Object({

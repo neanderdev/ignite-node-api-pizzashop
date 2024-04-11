@@ -8,12 +8,12 @@ import { auth } from '../auth'
 export const createEvaluation = new Elysia().use(auth).post(
   '/evaluations',
   async ({ body, getCurrentUser, set }) => {
-    const { userId } = await getCurrentUser()
+    const { customerId } = await getCurrentUser()
     const { restaurantId, rate, comment } = body
 
     await db.insert(evaluations).values({
       restaurantId,
-      customerId: userId,
+      customerId,
       rate,
       comment,
     })

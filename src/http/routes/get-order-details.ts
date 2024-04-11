@@ -1,7 +1,8 @@
 import { and } from 'drizzle-orm'
 import Elysia, { t } from 'elysia'
 
-import { UnauthorizedError } from '../errors/unauthorized-error'
+import { NotAManagerError } from './errors/not-a-manager-error'
+import { UnauthorizedError } from './errors/unauthorized-error'
 
 import { db } from '@/db/connection'
 
@@ -9,12 +10,12 @@ import { auth } from '../auth'
 
 export const getOrderDetails = new Elysia().use(auth).get(
   '/orders/:orderId',
-  async ({ getCurrentUser, params, set }) => {
+  async ({ getCurrentUser, params }) => {
     const { orderId } = params
-    const { restauranteId } = await getCurrentUser()
+    const { restaurantId } = await getCurrentUser()
 
-    if (!restauranteId) {
-      throw new UnauthorizedError()
+    if (!restaurantId) {
+      throw new NotAManagerError()
     }
 
     const order = await db.query.orders.findFirst({
@@ -50,15 +51,13 @@ export const getOrderDetails = new Elysia().use(auth).get(
       where(fields, { eq }) {
         return and(
           eq(fields.id, orderId),
-          eq(fields.restaurantId, restauranteId),
+          eq(fields.restaurantId, restaurantId),
         )
       },
     })
 
     if (!order) {
-      set.status = 400
-
-      return { message: 'Order not found.' }
+      throw new UnauthorizedError()
     }
 
     return order

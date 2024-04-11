@@ -2,8 +2,6 @@ import dayjs from 'dayjs'
 import { and, eq, gte, lte, sql, sum } from 'drizzle-orm'
 import Elysia, { t } from 'elysia'
 
-import { UnauthorizedError } from '../errors/unauthorized-error'
-
 import { db } from '@/db/connection'
 import { orders } from '@/db/schema'
 
@@ -11,12 +9,8 @@ import { auth } from '../auth'
 
 export const getDailyReceiptInPeriod = new Elysia().use(auth).get(
   '/metrics/daily-receipt-in-period',
-  async ({ getCurrentUser, query, set }) => {
-    const { restauranteId } = await getCurrentUser()
-
-    if (!restauranteId) {
-      throw new UnauthorizedError()
-    }
+  async ({ getManagedRestaurantId, query, set }) => {
+    const restaurantId = await getManagedRestaurantId()
 
     const { from, to } = query
 
@@ -27,7 +21,8 @@ export const getDailyReceiptInPeriod = new Elysia().use(auth).get(
       set.status = 400
 
       return {
-        message: 'You cannot list receipt in a large period than 7 days.',
+        code: 'INVALID_PERIOD',
+        message: 'O intervalo das datas não pode ser superior a 7 dias.',
       }
     }
 
@@ -39,7 +34,7 @@ export const getDailyReceiptInPeriod = new Elysia().use(auth).get(
       .from(orders)
       .where(
         and(
-          eq(orders.restaurantId, restauranteId),
+          eq(orders.restaurantId, restaurantId),
           gte(
             orders.createdAt,
             startDate

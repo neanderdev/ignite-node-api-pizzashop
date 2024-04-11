@@ -3,8 +3,8 @@ import { Elysia, t } from 'elysia'
 import { db } from '@/db/connection'
 import { restaurants, users } from '@/db/schema'
 
-export const registerRestaurante = new Elysia().post(
-  '/restaurantes',
+export const registerRestaurant = new Elysia().post(
+  '/restaurants',
   async ({ body, set }) => {
     const { restaurantName, managerName, email, phone } = body
 
@@ -25,14 +25,14 @@ export const registerRestaurante = new Elysia().post(
       managerId: manager.id,
     })
 
-    set.status = 204
+    set.status = 201
   },
   {
     body: t.Object({
       restaurantName: t.String(),
-      managerName: t.String(),
-      phone: t.String(),
+      managerName: t.String({ minLength: 4 }),
       email: t.String({ format: 'email' }),
+      phone: t.String(),
     }),
   },
 )

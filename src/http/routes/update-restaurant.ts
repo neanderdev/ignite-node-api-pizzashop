@@ -4,21 +4,13 @@ import Elysia, { t } from 'elysia'
 import { db } from '@/db/connection'
 import { restaurants } from '@/db/schema'
 
-import { UnauthorizedError } from '../errors/unauthorized-error'
-
 import { auth } from '../auth'
 
 export const updateRestaurant = new Elysia().use(auth).put(
   '/restaurants',
-  async ({ getCurrentUser, set, body }) => {
-    const { restauranteId } = await getCurrentUser()
+  async ({ getManagedRestaurantId, set, body }) => {
     const { name, description } = body
-
-    if (!restauranteId) {
-      set.status = 401
-
-      throw new UnauthorizedError()
-    }
+    const restaurantId = await getManagedRestaurantId()
 
     await db
       .update(restaurants)
@@ -26,7 +18,7 @@ export const updateRestaurant = new Elysia().use(auth).put(
         name,
         description,
       })
-      .where(eq(restaurants.id, restauranteId))
+      .where(eq(restaurants.id, restaurantId))
 
     set.status = 204
   },

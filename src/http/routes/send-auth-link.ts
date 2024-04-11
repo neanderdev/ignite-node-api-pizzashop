@@ -2,7 +2,7 @@ import { createId } from '@paralleldrive/cuid2'
 import Elysia, { t } from 'elysia'
 import nodemailer from 'nodemailer'
 
-import { UnauthorizedError } from '../errors/unauthorized-error'
+import { UnauthorizedError } from './errors/unauthorized-error'
 
 import { db } from '@/db/connection'
 import { authLinks } from '@/db/schema'
